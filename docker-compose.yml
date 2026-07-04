@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: ldgr-postgres
+
+    environment:
+      POSTGRES_DB: ldgr
+      POSTGRES_USER: ldgr
+      POSTGRES_PASSWORD: ldgr
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
