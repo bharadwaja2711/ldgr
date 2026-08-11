@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class SecurityConfig {
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
-                                SessionCreationPolicy.IF_REQUIRED
+                                SessionCreationPolicy.STATELESS
                         )
                 )
 
@@ -51,6 +52,19 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
                         .anyRequest().authenticated()
+                )
+
+                .exceptionHandling(exception -> exception
+                        .defaultAuthenticationEntryPointFor(
+                                (request, response, authenticationException) -> {
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                    response.setContentType("application/json");
+                                    response.getWriter().write(
+                                            "{\"message\":\"Authentication required\"}"
+                                    );
+                                },
+                                request -> request.getRequestURI().startsWith("/api/")
+                        )
                 )
 
                 .oauth2Login(oauth -> oauth

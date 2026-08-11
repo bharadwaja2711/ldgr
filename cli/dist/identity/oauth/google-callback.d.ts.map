@@ -1,0 +1,1 @@
+{"version":3,"file":"google-callback.d.ts","sourceRoot":"","sources":["../../../src/identity/oauth/google-callback.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,iBAAiB;IAChC,MAAM,EAAE,MAAM,CAAC;IACf,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,EAAE,MAAM,CAAC;IACpB,YAAY,EAAE,MAAM,CAAC;CACtB;AAED,wBAAgB,qBAAqB,CACnC,IAAI,EAAE,MAAM,GACX,OAAO,CAAC,iBAAiB,CAAC,CA8C5B"}

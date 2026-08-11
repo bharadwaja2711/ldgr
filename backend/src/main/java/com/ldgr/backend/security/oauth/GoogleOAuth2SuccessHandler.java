@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -22,6 +24,8 @@ public class GoogleOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    @Value("${ldgr.security.oauth.cli-callback}")
+    private String cliCallback;
 
     @Override
     @Transactional
@@ -76,21 +80,16 @@ public class GoogleOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String refreshToken =
                 jwtService.generateRefreshToken(normalizedEmail);
 
-        response.setContentType("application/json");
-        response.getWriter().write(
-                """
-                {
-                  "userId": "%s",
-                  "email": "%s",
-                  "accessToken": "%s",
-                  "refreshToken": "%s"
-                }
-                """.formatted(
-                        user.getId(),
-                        user.getEmail(),
-                        accessToken,
-                        refreshToken
-                )
-        );
+        String callbackUrl = UriComponentsBuilder
+                .fromUriString(cliCallback)
+                .queryParam("userId", user.getId())
+                .queryParam("email", user.getEmail())
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
+                .build()
+                .encode()
+                .toUriString();
+
+        response.sendRedirect(callbackUrl);
     }
 }

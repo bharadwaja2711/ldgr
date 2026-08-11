@@ -41,9 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(7);
 
         if (!jwtService.isValid(token)) {
+            System.out.println("LDGR JWT INVALID");
             filterChain.doFilter(request, response);
             return;
         }
+
+        System.out.println("LDGR JWT VALID");
 
         String email = jwtService.extractUsername(token);
 

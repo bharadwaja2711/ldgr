@@ -25,7 +25,7 @@ public class LdgrUserDetailsService implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
-                .password(user.getPasswordHash())
+                .password(user.getPasswordHash() != null ? user.getPasswordHash() : "{noop}oauth-user")
                 .disabled(!"ACTIVE".equals(user.getStatus()))
                 .authorities("USER")
                 .build();
