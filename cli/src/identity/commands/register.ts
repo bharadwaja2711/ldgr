@@ -6,7 +6,7 @@ import { IdentityService } from "../services/identity-service.js";
 
 export async function register(): Promise<void> {
   const email = await input({ message: "Email:" });
-  const userPassword = await password({ message: "Password:", mask: "*" });
+  const userPassword = await password({ message: "Password (min 8 characters):", mask: "*" });
   const firstName = await input({ message: "First name:" });
   const lastName = await input({ message: "Last name:" });
 
