@@ -41,3 +41,9 @@ logs/
 # OS Temporary Files
 # =========================
 Thumbs.db
+
+# =========================
+# Web / Node
+# =========================
+web/node_modules/
+web/dist/
