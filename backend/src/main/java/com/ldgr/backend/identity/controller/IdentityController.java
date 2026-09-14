@@ -2,6 +2,8 @@ package com.ldgr.backend.identity.controller;
 
 import com.ldgr.backend.identity.dto.LoginRequest;
 import com.ldgr.backend.identity.dto.LoginResponse;
+import com.ldgr.backend.identity.dto.LogoutRequest;
+import com.ldgr.backend.identity.dto.RefreshTokenRequest;
 import com.ldgr.backend.identity.dto.RegisterRequest;
 import com.ldgr.backend.identity.dto.RegisterResponse;
 import com.ldgr.backend.identity.service.IdentityService;
@@ -30,5 +32,20 @@ public class IdentityController {
             @Valid @RequestBody LoginRequest request
     ) {
         return identityService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    public LoginResponse refresh(
+            @Valid @RequestBody RefreshTokenRequest request
+    ) {
+        return identityService.refresh(request.refreshToken());
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(
+            @Valid @RequestBody LogoutRequest request
+    ) {
+        identityService.logout(request.refreshToken());
     }
 }

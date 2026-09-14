@@ -9,9 +9,14 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class JwtService {
+
+    private static final String CLAIM_TOKEN_TYPE = "typ";
+    private static final String TYPE_ACCESS = "ACCESS";
+    private static final String TYPE_REFRESH = "REFRESH";
 
     private final SecretKey signingKey;
     private final long accessTokenExpiration;
@@ -25,32 +30,20 @@ public class JwtService {
         this.signingKey = Keys.hmacShaKeyFor(
                 secret.getBytes(StandardCharsets.UTF_8)
         );
-
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
     public String generateAccessToken(String email) {
-        return generateToken(email, accessTokenExpiration);
+        return generateToken(email, accessTokenExpiration, TYPE_ACCESS);
     }
 
     public String generateRefreshToken(String email) {
-        return generateToken(email, refreshTokenExpiration);
+        return generateToken(email, refreshTokenExpiration, TYPE_REFRESH);
     }
 
-    private String generateToken(String subject, long expiration) {
-
-        Date issuedAt = new Date();
-        Date expiresAt = new Date(
-                issuedAt.getTime() + expiration
-        );
-
-        return Jwts.builder()
-                .subject(subject)
-                .issuedAt(issuedAt)
-                .expiration(expiresAt)
-                .signWith(signingKey)
-                .compact();
+    public Date extractExpiration(String token) {
+        return parseClaims(token).getExpiration();
     }
 
     public String extractUsername(String token) {
@@ -64,6 +57,46 @@ public class JwtService {
         } catch (Exception exception) {
             return false;
         }
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            return TYPE_REFRESH.equals(
+                    parseClaims(token).get(CLAIM_TOKEN_TYPE, String.class)
+            );
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isAccessToken(String token) {
+        try {
+            return TYPE_ACCESS.equals(
+                    parseClaims(token).get(CLAIM_TOKEN_TYPE, String.class)
+            );
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private String generateToken(
+            String subject,
+            long expiration,
+            String tokenType
+    ) {
+        Date issuedAt = new Date();
+        Date expiresAt = new Date(
+                issuedAt.getTime() + expiration
+        );
+
+        return Jwts.builder()
+                .id(UUID.randomUUID().toString())
+                .subject(subject)
+                .issuedAt(issuedAt)
+                .expiration(expiresAt)
+                .claim(CLAIM_TOKEN_TYPE, tokenType)
+                .signWith(signingKey)
+                .compact();
     }
 
     private Claims parseClaims(String token) {
