@@ -1,31 +1,26 @@
 # LDGR
 
-> A multi-tenant double-entry accounting engine built for modern businesses.
+> Open-source financial infrastructure for businesses of every size.
 
-LDGR is an enterprise-grade financial infrastructure platform that implements immutable double-entry bookkeeping, multi-entity accounting, enterprise authentication, audit trails, and financial intelligence.
+Every business needs reliable financial records. Most outgrow their software
+before they outgrow their ambition. LDGR is built to grow with them — from
+a local shop to a large organisation — without ever needing to switch the
+underlying system.
 
-## Tech Stack
+Open source. Self-hostable. Free.
 
-- Java 21
-- Spring Boot
-- PostgreSQL
-- React
-- TypeScript
-- Kafka
-- Redis
-- Docker
+## Current state
 
-## Status
+- Monorepo structure: `backend/`, `web/`, `cli/`
+- Authentication: JWT + Google OAuth across the backend, web, and CLI
+- Nothing else yet. We are building in the open from the ground.
 
-🚧 Phase 1 — Foundation
+## Contributing
 
-- Authentication
-- Organization Management
-- Chart of Accounts
-- Journal Entry Engine
-- General Ledger
+This is early. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) to understand how we work.
+Read [`docs/VISION.md`](docs/VISION.md) to understand where we're going.
+If the problem resonates, open a discussion.
 
 ## License
 
-GNU Affero General Public License v3.0 (AGPL-3.0)
-
+AGPL-3.0
